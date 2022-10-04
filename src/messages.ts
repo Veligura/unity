@@ -7,7 +7,7 @@ export enum Actions {
 
 const eventName = "UNITY_MESSAGING"
 
-export const subscribe = (listener: (event: Event)=> void) => {
+export const subscribe = (listener: (data: any)=> void) => {
  // @ts-ignore
  document.addEventListener(eventName, ({detail})=> listener(detail))
 }
