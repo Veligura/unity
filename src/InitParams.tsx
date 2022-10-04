@@ -12,11 +12,15 @@ type Message = {
 
 const webviewMessage = `message.Scheme // "uniwebview"
 message.Path   // "action"
-message.Args   // {"actionType": "GET_ACCESS_TOKEN"}
+message.Args   // {"actionType": "GET_INIT_PARAMS"}
 `
 
 const text = `
-webView.EvaluateJavaScript("sendMessage({action:'ACCESS_TOKEN', payload: 'eyJhbG....'});", 
+webView.EvaluateJavaScript("sendMessage({action:'INIT_PARAMS', payload: {
+workspaceID: "51816ca8-2a6a-45fe-a2be-cecb69cdfe7a",
+sceneID: "941a4ba5-bd70-4cdf-a467-e9a22927869f",
+page: "scene"
+}});", 
 (payload) => {
     if (payload.resultCode.Equals("0")) {
      //
@@ -24,29 +28,29 @@ webView.EvaluateJavaScript("sendMessage({action:'ACCESS_TOKEN', payload: 'eyJhbG
   });
 `
 
-export const ViewAccessToken = () => {
-    const [token, setToken] = useState()
+export const InitParams = () => {
+    const [params, setParams] = useState()
 
     useEffect(() => {
-        subscribe(({action, payload}: Message): void => {
-            if (action === Actions.ACCESS_TOKEN) {
-                setToken(payload)
+        subscribe(({action,payload}: Message): void => {
+            if(action === Actions.INIT_PARAMS){
+                setParams(payload)
             }
         })
     }, [])
 
     return <div>
-        <Typography variant="h3">Access Token</Typography>
+        <Typography variant="h3">Initial Params</Typography>
 
         <br/>
-        <Button variant={"outlined"} onClick={() => sendMessage(Actions.GET_ACCESS_TOKEN)}>Request the unity side to
-            send access token</Button>
+        <Button variant={"outlined"} onClick={() => sendMessage(Actions.GET_INIT_PARAMS)}>Request the unity side to
+            send initial parameters</Button>
         <br/>
         <br/>
 
         <Typography variant={"body1"}>
             To request access token webview sends message to the unity side via
-            link <code>uniwebview://action?actionType=GET_ACCESS_TOKEN</code>
+            link <code>uniwebview://action?actionType=GET_INIT_PARAMS</code>
             <br/>
             <br/>
             UniWebView parses the input and pass it to you in the OnMessageReceived event, as the message
@@ -82,7 +86,7 @@ export const ViewAccessToken = () => {
                     />
                 </Typography>
             </Box>
-            <Typography variant={"h4"}>Token: {token ? JSON.stringify(token) : <CircularProgress/>}</Typography>
+            <Typography variant={"h4"}>Initial params: {params ? JSON.stringify(params) : <CircularProgress/>}</Typography>
         </Box>
     </div>
 

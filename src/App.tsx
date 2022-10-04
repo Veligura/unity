@@ -1,25 +1,60 @@
-import React, {useEffect} from 'react';
-import logo from './logo.svg';
+import React, {FC, useEffect} from 'react';
+import {
+    Link as RouterLink, Route
+} from 'react-router-dom'
+import Link from '@mui/material/Link'
+import {Routes, Navigate} from "react-router-dom";
 import './App.css';
-import {Button, Typography} from "@mui/material";
-import {sendMessage} from "./utils";
-import {Actions, publish, subscribe} from "./messages";
+
+import {ToProjectList} from "./ToProjectList";
+import {publish} from "./messages";
 import {ViewAccessToken} from "./ViewAccessToken";
+import {ScanProduct} from './ScanProduct'
+import {InitParams} from "./InitParams";
+import {Box} from "@mui/material";
 
 function App() {
-    useEffect(()=>{
+    useEffect(() => {
         //@ts-ignore
-        window.sendMessage = (data: any)=> publish(data)
-    },[])
-  return (
-    <div className="App">
-      <header className="App-header">
-          <Typography variant="h1">Access token</Typography>
-        <Button onClick={()=>sendMessage(Actions.GET_ACCESS_TOKEN)} >Request unity side to get token</Button>
-          <ViewAccessToken />
-      </header>
-    </div>
-  );
+        window.sendMessage = (data: any) => publish(data)
+    }, [])
+    return (
+        <div className="App">
+            <header className="App-header">
+                <div className="links">
+                    <Link
+                        component={RouterLink}
+                        to="access-token">
+                        Access token
+                    </Link>
+                    <Link
+                        component={RouterLink}
+                        to="init-params">
+                        Initial Params
+                    </Link>
+                    <Link
+                        component={RouterLink}
+                        to="scan-product">
+                        Scan product
+                    </Link>
+                    <Link
+                        component={RouterLink}
+                        to="project-list">
+                        To project list
+                    </Link>
+                </div>
+            </header>
+            <Box mx={10}>
+                <Routes>
+                    <Route path="access-token" element={<ViewAccessToken/>}/>
+                    <Route path="scan-product" element={<ScanProduct/>}/>
+                    <Route path="project-list" element={<ToProjectList/>}/>
+                    <Route path="init-params" element={<InitParams/>}/>
+                    <Route path="/" element={<Navigate to={"access-token"}/>}/>
+                </Routes>
+            </Box>
+        </div>
+    );
 }
 
 export default App;
